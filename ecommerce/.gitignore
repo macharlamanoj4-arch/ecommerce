@@ -1,2 +1,4 @@
 ecommerce.code-workspace
 node_modules
+dist
+yarn.lock
