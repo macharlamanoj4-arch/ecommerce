@@ -21,22 +21,24 @@ router.post(
         req.body
       );
 
+      
+
+      if (errors) return res.status(400).json(errors);
+      let user_data={
+        "username":input.email,
+        "password":input.password
+      }
+      const user = await userservice.createUser( user_data)
       let profile_data = {
         "firstname":input.firstName,
         "lastname":input.lastName,
         "phone":input.phone,
         "email":input.email,
-        "address":input.address
+        "address":input.address,
+        "userid":user.id
       }
-
-      if (errors) return res.status(400).json(errors);
       const profile = await profileservice.createProfile(profile_data)
-      let user_data={
-        "username":input.email,
-        "password":input.password,
-        "profile":profile.id
-      }
-      const user = await userservice.createUser( user_data)
+      
       return res.status(201).json([profile,user]);
     } catch (error) {
       const err = error as Error;
