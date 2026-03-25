@@ -68,7 +68,7 @@ router.get(
 router.get(
   "/products/:id",
   async (req: Request, res: Response, next: NextFunction) => {
-    const id = parseInt(req.params.id) || 0;
+    const id = req.params.id;
     try {
       const data = await catalogService.getProduct(id);
       return res.status(200).json(data);
@@ -81,7 +81,7 @@ router.get(
 router.delete(
   "/products/:id",
   async (req: Request, res: Response, next: NextFunction) => {
-    const id = parseInt(req.params.id) || 0;
+    const id = req.params.id;
     try {
       const data = await catalogService.deleteProduct(id);
       return res.status(200).json(data);

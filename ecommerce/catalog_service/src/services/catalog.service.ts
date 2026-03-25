@@ -31,18 +31,18 @@ export class CatalogService {
     return products;
   }
 
-  async getProduct(id: number) {
+  async getProduct(id: string) {
     const product = await this._repository.findOne(id);
     return product;
   }
 
-  async deleteProduct(id: number) {
+  async deleteProduct(id: string) {
     const response = await this._repository.delete(id);
     // delete record from Elastic search
     return response;
   }
 
-  async getProductStock(ids: number[]) {
+  async getProductStock(ids: string[]) {
     const products = await this._repository.findStock(ids);
     if (!products) {
       throw new Error("unable to find product stock details");

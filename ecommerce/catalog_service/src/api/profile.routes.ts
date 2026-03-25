@@ -2,14 +2,14 @@ import express, { NextFunction, Request, Response } from "express";
 import { UserService } from "../services/user.service"
 import { RequestValidator } from "../utils/requestValidator";
 import { UserRepository } from "../repository/user.repository";
-import { ProfileService } from "../services/profile.service";
-import { ProfileRepository } from "../repository/profile.repository";
+// import { ProfileService } from "../services/profile.service";
+// import { ProfileRepository } from "../repository/profile.repository";
 import { CreateProfileRequest } from "../dto/profile.dto";
 
 const router = express.Router();
 
 export const userservice = new UserService( new UserRepository())
-export const profileservice = new ProfileService( new ProfileRepository())
+// export const profileservice = new ProfileService( new ProfileRepository())
 
 // endpoints
 router.post(
@@ -21,25 +21,10 @@ router.post(
         req.body
       );
 
-      
-
       if (errors) return res.status(400).json(errors);
-      let user_data={
-        "username":input.email,
-        "password":input.password
-      }
-      const user = await userservice.createUser( user_data)
-      let profile_data = {
-        "firstname":input.firstName,
-        "lastname":input.lastName,
-        "phone":input.phone,
-        "email":input.email,
-        "address":input.address,
-        "userid":user.id
-      }
-      const profile = await profileservice.createProfile(profile_data)
+      const user = await userservice.createUser( input)
       
-      return res.status(201).json([profile,user]);
+      return res.status(201).json([user]);
     } catch (error) {
       const err = error as Error;
       return res.status(500).json(err.message);

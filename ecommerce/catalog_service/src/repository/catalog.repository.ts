@@ -32,7 +32,7 @@ export class CatalogRepository implements ICatalogRepository {
       skip: offset,
     });
   }
-  async findOne(id: number): Promise<Product> {
+  async findOne(id: string): Promise<Product> {
     const product = await this._prisma.product.findFirst({
       where: { id },
     });
@@ -42,7 +42,7 @@ export class CatalogRepository implements ICatalogRepository {
     throw new NotFoundError("product not found");
   }
 
-  findStock(ids: number[]): Promise<Product[]> {
+  findStock(ids: string[]): Promise<Product[]> {
     return this._prisma.product.findMany({
       where: {
         id: {

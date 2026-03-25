@@ -14,7 +14,7 @@ model Product {
 id          String   @id @default(uuid()) @db.Uuid
 name        String
 description String?
-price       Decimal  @db.Decimal(10, 2)
+price       Int      @default(0)
 stock       Int      @default(0)
 
 createdAt   DateTime @default(now())
