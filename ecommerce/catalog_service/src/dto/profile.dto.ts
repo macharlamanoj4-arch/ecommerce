@@ -1,6 +1,7 @@
-import { IsNotEmpty, IsNumber, IsString, Min } from "class-validator";
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsNumber, IsString, Min, ValidateNested } from "class-validator";
 
-export class CreateProfileRequest {
+export class ProfileRequest {
   @IsString()
   @IsNotEmpty()
   firstName: string;
@@ -20,10 +21,20 @@ export class CreateProfileRequest {
   @IsString()
   @IsNotEmpty()
   address: string;
+}
+export class CreateProfileRequest {
+
+  @ValidateNested()
+  @Type(() => ProfileRequest)
+  profile: ProfileRequest;
 
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  username: string;
 }
 
 export class UpdateProductRequest {
