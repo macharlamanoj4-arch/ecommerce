@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsString, Min, ValidateNested } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Min, ValidateNested } from "class-validator";
 
 export class ProfileRequest {
   @IsString()
@@ -15,7 +15,7 @@ export class ProfileRequest {
   email: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   phone: string;
 
   @IsString()
@@ -37,13 +37,26 @@ export class CreateProfileRequest {
   username: string;
 }
 
-export class UpdateProductRequest {
-  name?: string;
+export class UpdateUserRequest {
+   @IsString()
+  @IsNotEmpty()
+  password: string;
 
-  description?: string;
+  @IsString()
+  @IsNotEmpty()
+  username: string;
 
-  price?: number;
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+}
 
-  @IsNumber()
-  stock?: number;
+export class LoginRequest {
+   @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  username: string;
 }

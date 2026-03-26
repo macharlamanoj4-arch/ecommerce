@@ -17,15 +17,13 @@ export const HandleErrorWithLogger = (
    let data = error.message;
 
    // skip common / known errors
-   [NotFoundError, ValidationError, AuthorizeError].forEach(
-      (typeOfError) => {
-         if (error instanceof typeOfError) {
-            reportError = false;
-            status = error.status;
-            data = error.message;
-         }
-      },
-   );
+   const handledErrors = [NotFoundError, ValidationError, AuthorizeError];
+
+   if (handledErrors.some(errType => error instanceof errType)) {
+      reportError = false;
+      status = status;
+      data = error.message;
+   }
 
    if (reportError) {
       // error reporting tools implementation eg: Cloudwatch,Sentry etc;
@@ -34,7 +32,11 @@ export const HandleErrorWithLogger = (
       logger.warn(error); // ignore common errors caused by user
    }
 
-   return res.status(status).json(data);
+   return res.status(status).json({
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+   });
 };
 
 export const HandleUnCaughtException = async (

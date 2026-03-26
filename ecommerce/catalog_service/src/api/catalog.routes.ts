@@ -37,7 +37,7 @@ router.patch(
         req.body
       );
 
-      const id = parseInt(req.params.id) || 0;
+      const id : string = req.params.id ;
 
       if (errors) return res.status(400).json(errors);
 

@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import expressApp from "./expressApp";
 import { logger } from "./utils";
 

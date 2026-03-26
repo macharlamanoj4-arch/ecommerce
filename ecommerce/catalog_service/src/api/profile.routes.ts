@@ -1,14 +1,15 @@
 import express, { NextFunction, Request, Response } from "express";
 import { UserService } from "../services/user.service"
 import { RequestValidator } from "../utils/requestValidator";
+import { generateToken } from "../utils/auth";
 import { UserRepository } from "../repository/user.repository";
 // import { ProfileService } from "../services/profile.service";
 // import { ProfileRepository } from "../repository/profile.repository";
-import { CreateProfileRequest } from "../dto/profile.dto";
+import { CreateProfileRequest, LoginRequest } from "../dto/profile.dto";
 
 const router = express.Router();
 
-export const userservice = new UserService( new UserRepository())
+export const userservice = new UserService(new UserRepository())
 // export const profileservice = new ProfileService( new ProfileRepository())
 
 // endpoints
@@ -22,8 +23,8 @@ router.post(
       );
 
       if (errors) return res.status(400).json(errors);
-      const user = await userservice.createUser( input)
-      
+      const user = await userservice.createUser(input)
+
       return res.status(201).json([user]);
     } catch (error) {
       const err = error as Error;
@@ -32,6 +33,33 @@ router.post(
   }
 );
 
+router.post(
+  "/login",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { errors, input } = await RequestValidator(
+        LoginRequest,
+        req.body
+      );
+
+      if (errors) return res.status(400).json(errors);
+      const user = await userservice.getUser(input.username, input.password)
+
+      const token:any = generateToken(user.id)
+
+      res.cookie("Authorization", token);
+
+      return res.status(201).json({
+        status: 'success',
+        token,
+        userId: user.id,
+      });
+    } catch (error) {
+      const err = error as Error;
+      return next(err);
+    }
+  }
+);
 // router.patch(
 //   "/products/:id",
 //   async (req: Request, res: Response, next: NextFunction) => {
