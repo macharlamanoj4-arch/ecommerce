@@ -14,7 +14,7 @@ export const userservice = new UserService(new UserRepository())
 
 // endpoints
 router.post(
-  "/signup",
+  "/register",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { errors, input } = await RequestValidator(
@@ -45,14 +45,21 @@ router.post(
       if (errors) return res.status(400).json(errors);
       const user = await userservice.getUser(input.username, input.password)
 
-      const token:any = generateToken(user.id)
+      const token: any = generateToken(user.id)
 
-      res.cookie("Authorization", token);
+      res.cookie("Authorization", token, {
+        httpOnly: true,    // Prevent frontend JS from reading the cookie (Security!)
+        secure: true,      // Only sent over HTTPS (use false for local dev without SSL)
+        sameSite: 'lax',   // Helps prevent CSRF attacks
+        maxAge: 3600000,   // Cookie expiration in milliseconds (1 hour)
+        path: '/',         // Available across the entire site
+      });
 
       return res.status(201).json({
         status: 'success',
-        token,
+        "token": token,
         userId: user.id,
+        ok: true
       });
     } catch (error) {
       const err = error as Error;

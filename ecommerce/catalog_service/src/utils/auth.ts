@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
         try {
             let secret: string = process.env.JWT_SECRET_KEY || "sdfghdshsdfhdfhndfhd";
             return jwt.sign({"id":id}, secret, {
-                expiresIn: 60 * 60,
+                expiresIn: 10 * 2,
             });
         } catch (error) {
             throw error;

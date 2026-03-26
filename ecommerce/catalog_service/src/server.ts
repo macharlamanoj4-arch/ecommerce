@@ -2,7 +2,7 @@ import "reflect-metadata";
 import expressApp from "./expressApp";
 import { logger } from "./utils";
 
-const PORT = process.env.APP_PORT || 8000;
+const PORT = process.env.PORT || 8000;
 
 export const StartServer = async () => {
   expressApp.listen(PORT, () => {

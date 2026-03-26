@@ -1,0 +1,22 @@
+services:
+  catalog_service:
+    build: ./dist
+    ports:
+      - "8000:8000"
+    environment:
+      PORT : 8000
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  catalog_ui:
+    build: .
+    port:
+      - "8001:8001"
+    environment:
+      PORT: 8001
+      - REACT_APP_API_BASE_URL: http://localhost:8000
+      - REACT_APP_CATALOG_API_URL: http://localhost:8000
+      - REACT_APP_USER_API_URL: http://localhost:8000
+      - REACT_APP_PROFILE_API_URL: http://localhost:8000
+      - REACT_APP_TOKEN_KEY: ecommerce_token
+      - REACT_APP_USER_KEY: ecommerce_user
