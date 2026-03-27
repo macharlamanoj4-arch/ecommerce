@@ -25,8 +25,8 @@ export class CatalogService {
   }
 
   // instead of this we will get product from Elastic search
-  async getProducts(limit: number, offset: number) {
-    const products = await this._repository.find(limit, offset);
+  async getProducts(limit: number, id: string) {
+    const products = await this._repository.find(limit, id);
 
     return products;
   }

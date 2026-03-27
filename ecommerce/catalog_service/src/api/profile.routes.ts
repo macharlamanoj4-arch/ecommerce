@@ -44,6 +44,7 @@ router.post(
 
       if (errors) return res.status(400).json(errors);
       const user = await userservice.getUser(input.username, input.password)
+      console.log(user)
 
       const token: any = generateToken(user.id)
 
@@ -58,7 +59,11 @@ router.post(
       return res.status(201).json({
         status: 'success',
         "token": token,
-        userId: user.id,
+        profile: {
+          "id":user.id,
+          "username":user.username,
+          "profile":user.profile
+        },
         ok: true
       });
     } catch (error) {

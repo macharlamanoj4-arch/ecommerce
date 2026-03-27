@@ -62,7 +62,7 @@ export class UserRepository implements IUserRepository {
       password,
     },
     include: {
-      profile: false,
+      profile: true,
     },
   });
 

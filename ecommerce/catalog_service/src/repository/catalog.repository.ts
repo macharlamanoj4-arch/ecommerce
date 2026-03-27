@@ -26,10 +26,18 @@ export class CatalogRepository implements ICatalogRepository {
       where: { id },
     });
   }
-  async find(limit: number, offset: number): Promise<Product[]> {
+  async find(limit: number, cursorId: string): Promise<Product[]> {
     return this._prisma.product.findMany({
       take: limit,
-      skip: offset,
+      ...(cursorId && {
+      skip: 1, 
+      cursor: {
+        id: cursorId,
+      },
+    }),
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   }
   async findOne(id: string): Promise<Product> {

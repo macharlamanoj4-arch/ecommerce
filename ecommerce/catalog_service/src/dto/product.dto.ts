@@ -14,6 +14,10 @@ export class CreateProductRequest {
 
   @IsNumber()
   stock: number;
+
+  @IsString()
+  @IsOptional()
+  img?: string;
 }
 
 export class UpdateProductRequest {
@@ -31,4 +35,8 @@ export class UpdateProductRequest {
   @IsNumber()
   @IsOptional()
   stock?: number;
+
+  @IsString()
+  @IsOptional()
+  img?: string;
 }

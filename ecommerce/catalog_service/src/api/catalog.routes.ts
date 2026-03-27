@@ -53,14 +53,10 @@ router.patch(
 router.get(
   "/products",
   async (req: Request, res: Response, next: NextFunction) => {
-    let limit = Number(req.query["limit"]);
-    let offset = Number(req.query["offset"]);
-    if (!limit && !offset){
-      limit = 2
-      offset=0
-    }
+    let limit = Number(req.query["limit"]) || 10;
+    let id = req.query["id"] as string;
     try {
-      const data = await catalogService.getProducts(limit, offset);
+      const data = await catalogService.getProducts(limit, id);
       return res.status(200).json(data);
     } catch (error) {
       const err = error as Error;

@@ -40,7 +40,7 @@ const Login: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem(process.env.REACT_APP_TOKEN_KEY || 'ecommerce_token', data.token);
-        localStorage.setItem(process.env.REACT_APP_USER_KEY || 'ecommerce_user', JSON.stringify({"userId":data.userId}));
+        localStorage.setItem(process.env.REACT_APP_USER_KEY || 'ecommerce_user', JSON.stringify(data.profile));
         navigate('/catalog');
       } else {
         setError('Invalid username or password');
