@@ -7,4 +7,5 @@ export interface ICatalogRepository {
   find(limit: number, id: string): Promise<Product[]>;
   findOne(id: string): Promise<Product>;
   findStock(ids: string[]): Promise<Product[]>;
+  findByCategory(categoryId: string): Promise<Product[]>;
 }

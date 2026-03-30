@@ -30,11 +30,11 @@ export class CatalogRepository implements ICatalogRepository {
     return this._prisma.product.findMany({
       take: limit,
       ...(cursorId && {
-      skip: 1, 
-      cursor: {
-        id: cursorId,
-      },
-    }),
+        skip: 1,
+        cursor: {
+          id: cursorId,
+        },
+      }),
       orderBy: {
         createdAt: "desc",
       },
@@ -56,6 +56,14 @@ export class CatalogRepository implements ICatalogRepository {
         id: {
           in: ids,
         },
+      },
+    });
+  }
+
+  findByCategory(categoryId: string): Promise<Product[]> {
+    return this._prisma.product.findMany({
+      where: {
+        categoryId,
       },
     });
   }

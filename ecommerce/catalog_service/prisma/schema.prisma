@@ -11,17 +11,36 @@ datasource db {
 }
 
 model Product {
-id          String   @id @default(uuid()) @db.Uuid
-name        String
-description String?
-price       Int      @default(0)
-stock       Int      @default(0)
-img String?
+  id          String    @id @default(uuid()) @db.Uuid
+  name       String
+  slug        String   @unique
+  description String
+  price       Int      @default(0)
+  
+  // Relation fields
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  
+  // PostgreSQL scalar list for images
+  images      String[]
 
-createdAt   DateTime @default(now())
-updatedAt   DateTime @updatedAt
+  creationAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-@@index([name])
+  @@index([name])
+}
+
+model Category {
+  id         Int       @id @default(autoincrement())
+  name       String
+  slug       String    @unique
+  image      String
+  
+  // Reverse relation (a category has many products)
+  products   Product[]
+
+  creationAt DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model User {
@@ -41,6 +60,7 @@ lastName  String
 email     String   @unique
 phone     String?
 address   String?
+image     Bytes?
 
 userId    String   @unique @db.Uuid
 user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
