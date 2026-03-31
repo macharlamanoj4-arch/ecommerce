@@ -17,10 +17,10 @@ import jwt from 'jsonwebtoken';
             let token
             if (req && req.headers.authorization) token = req.headers.authorization;
             else token = req && req.cookie && req.cookie.authenticate ? req.cookie.authenticate : undefined;
-            let validate = true;
-            if (process.env.SSO_VALIDATE === "true") {
-                validate = true
-            }
+            let validate = false;
+            // if (process.env.SSO_VALIDATE === "true") {
+            //     validate = true
+            // }
             if (req && req.originalUrl == "/login") {
                 if (token) {
                     res.cookie("Authorization", token);
@@ -31,7 +31,8 @@ import jwt from 'jsonwebtoken';
                 } else next();
             }
             else {
-                if (token) {
+                if (!validate) next();
+                else if (token) {
                     var error=[];
                     let secret = process.env.JWT_SECRET_KEY || "sdfghdshsdfhdfhndfhd";
                     jwt.verify(token, secret, function (err, decoded) {
@@ -44,7 +45,6 @@ import jwt from 'jsonwebtoken';
                     });
                     next()
                 }
-                else if (!validate) next();
                 else {
                     let err = new Error("Unauthorized");
                     return next(err);

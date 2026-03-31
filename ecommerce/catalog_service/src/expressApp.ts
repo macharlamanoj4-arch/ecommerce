@@ -23,7 +23,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use("/", profileRouter);
-app.use("/",authenticate, catalogRouter);
+app.use("/products",authenticate, catalogRouter);
 
 app.use(HandleErrorWithLogger);
 

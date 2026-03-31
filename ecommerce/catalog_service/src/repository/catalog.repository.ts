@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Product as PrismaProduct } from "@prisma/client";
 import { ICatalogRepository } from "../interface/catalogRepository.interface";
 import { Product } from "../models/product.model";
 import { NotFoundError } from "../utils";
@@ -10,12 +10,12 @@ export class CatalogRepository implements ICatalogRepository {
     this._prisma = new PrismaClient();
   }
 
-  async create(data: Product): Promise<Product> {
+  async create(data: PrismaProduct): Promise<PrismaProduct> {
     return this._prisma.product.create({
       data,
     });
   }
-  async update(data: Product): Promise<Product> {
+  async update(data: PrismaProduct): Promise<PrismaProduct> {
     return this._prisma.product.update({
       where: { id: data.id },
       data,
@@ -36,7 +36,7 @@ export class CatalogRepository implements ICatalogRepository {
         },
       }),
       orderBy: {
-        createdAt: "desc",
+        creationAt: "desc",
       },
     });
   }
@@ -60,11 +60,4 @@ export class CatalogRepository implements ICatalogRepository {
     });
   }
 
-  findByCategory(categoryId: string): Promise<Product[]> {
-    return this._prisma.product.findMany({
-      where: {
-        categoryId,
-      },
-    });
-  }
 }

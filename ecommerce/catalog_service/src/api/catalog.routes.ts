@@ -3,14 +3,17 @@ import { CatalogService } from "../services/catalog.service";
 import { CatalogRepository } from "../repository/catalog.repository";
 import { RequestValidator } from "../utils/requestValidator";
 import { CreateProductRequest, UpdateProductRequest } from "../dto/product.dto";
+import { CategoryService } from "../services/category.service";
+import { CategoryRepository } from "../repository/category.repository";
 
 const router = express.Router();
 
 export const catalogService = new CatalogService(new CatalogRepository());
+export const categoryService = new CategoryService(new CategoryRepository());
 
 // endpoints
 router.post(
-  "/products",
+  "/",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { errors, input } = await RequestValidator(
@@ -29,7 +32,7 @@ router.post(
 );
 
 router.patch(
-  "/products/:id",
+  "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { errors, input } = await RequestValidator(
@@ -51,7 +54,7 @@ router.patch(
 );
 
 router.get(
-  "/products",
+  "/",
   async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query["limit"]) || 10;
     let id = req.query["id"] as string;
@@ -60,13 +63,13 @@ router.get(
       return res.status(200).json(data);
     } catch (error) {
       const err = error as Error;
-      return res.status(500).json(err.message);
+      return next(err);
     }
   }
 );
 
 router.get(
-  "/products/:id",
+  "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     try {
@@ -79,7 +82,7 @@ router.get(
 );
 
 router.delete(
-  "/products/:id",
+  "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     try {
@@ -92,7 +95,7 @@ router.delete(
   }
 );
 
-router.post("/products/stock", async (req: Request, res: Response) => {
+router.post("/stock", async (req: Request, res: Response) => {
   try {
     const data = await catalogService.getProductStock(req.body.ids);
     return res.status(200).json(data);
@@ -101,5 +104,18 @@ router.post("/products/stock", async (req: Request, res: Response) => {
     return res.status(500).json(err.message);
   }
 });
+
+router.get(
+  "/category/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = parseInt(req.params.id) || 0;
+    try {
+      const data = await categoryService.getByCategory(id);
+      return res.status(200).json(data);
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 
 export default router;

@@ -16,7 +16,7 @@ model Product {
   slug        String   @unique
   description String
   price       Int      @default(0)
-  
+  stock       Int      @default(0)
   // Relation fields
   categoryId  Int
   category    Category @relation(fields: [categoryId], references: [id])

@@ -40,3 +40,30 @@ export class UpdateProductRequest {
   @IsOptional()
   img?: string;
 }
+
+export class CreateCategoryRequest {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  slug: string;
+
+  @IsString()
+  @IsOptional()
+  image?: string;
+}
+
+export class UpdateCategoryRequest {
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @IsString()
+  @IsOptional()
+  slug: string;
+
+  @IsString()
+  @IsOptional()
+  image?: string;
+}

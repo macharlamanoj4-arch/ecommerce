@@ -1,21 +1,21 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Category as PrismaCategory } from "@prisma/client";
 import { Category, Product } from "../models/product.model";
 import { NotFoundError } from "../utils";
 import { ICategoryRepository } from "../interface/categoryRepository.interface";
 
-export class CatalogRepository implements ICategoryRepository {
+export class CategoryRepository implements ICategoryRepository {
   _prisma: PrismaClient;
 
   constructor() {
     this._prisma = new PrismaClient();
   }
 
-  async create(data: Category): Promise<Category> {
+  async create(data: PrismaCategory): Promise<Category> {
     return this._prisma.category.create({
       data,
     });
   }
-  async update(data: Category): Promise<Category> {
+  async update(data: PrismaCategory): Promise<Category> {
     return this._prisma.category.update({
       where: { id: data.id },
       data,
@@ -41,7 +41,7 @@ export class CatalogRepository implements ICategoryRepository {
   }
 
 
-  findByCategory(categoryId: number): Promise<Product[]> {
+  findByCategory(categoryId: number): Promise<PrismaCategory[]> {
     return this._prisma.category.findMany({
       where: {
         id: categoryId,
