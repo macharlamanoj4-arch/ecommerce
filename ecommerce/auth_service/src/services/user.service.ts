@@ -24,8 +24,8 @@ export class UserService {
     return data;
   }
 
-  async getUser(username: String , password: String) {
-    const User = await this._repository.findOne(username,password);
+  async getUser(email: String , password?: String) {
+    const User = await this._repository.findOne(email,password);
     return User;
   }
 

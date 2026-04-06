@@ -4,5 +4,5 @@ export interface IUserRepository {
   create(data: User): Promise<User>;
   update(data: User): Promise<User>;
   delete(id: any);
-  findOne(username: String , password: String ): Promise<User>;
+  findOne(email: String , password?: String ): Promise<User>;
 }

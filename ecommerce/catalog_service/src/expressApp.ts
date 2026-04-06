@@ -1,6 +1,5 @@
 import express from "express";
 import catalogRouter from "./api/catalog.routes";
-import profileRouter from "./api/profile.routes"
 import { httpLogger, HandleErrorWithLogger } from "./utils";
 import { authenticate } from "./utils";
 import cors from "cors";
@@ -8,6 +7,10 @@ import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(httpLogger);
+
+// Session configuration for OAuth
+
+// Initialize Passport
 
 const corsOptions = {
   credentials: true,
@@ -22,8 +25,7 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-app.use("/", profileRouter);
-app.use("/products",authenticate, catalogRouter);
+app.use("/products", authenticate, catalogRouter);
 
 app.use(HandleErrorWithLogger);
 

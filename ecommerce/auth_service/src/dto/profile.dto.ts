@@ -19,7 +19,7 @@ export class ProfileRequest {
   phone: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   address: string;
 }
 export class CreateProfileRequest {
@@ -35,6 +35,7 @@ export class CreateProfileRequest {
   @IsString()
   @IsNotEmpty()
   username: string;
+
 }
 
 export class UpdateUserRequest {
@@ -58,5 +59,5 @@ export class LoginRequest {
 
   @IsString()
   @IsNotEmpty()
-  username: string;
+  email: string;
 }

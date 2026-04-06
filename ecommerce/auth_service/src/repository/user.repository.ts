@@ -15,8 +15,8 @@ export class UserRepository implements IUserRepository {
     data: {
       username: data.username,
       password: data.password,
+      email: data.profile ? data.profile.email : "",
 
-      // Handle profile relation
       ...(data.profile && {
         profile: {
           create: {
@@ -55,11 +55,11 @@ export class UserRepository implements IUserRepository {
       where: { id },
     });
   }
-  async findOne(username: string , password: string ): Promise<User> {
+  async findOne(email: string , password?: string ): Promise<User> {
   const user = await this._prisma.user.findFirst({
     where: {
-      username,
-      password,
+      email,
+      ...(password && { password }),
     },
     include: {
       profile: true,
@@ -77,6 +77,7 @@ export class UserRepository implements IUserRepository {
     data.id,
     data.username,
     data.password,
+    data.profile?.email,
     data.profile
       ? new Profile(
           data.profile.id,

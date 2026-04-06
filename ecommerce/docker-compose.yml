@@ -8,6 +8,15 @@ services:
       - NODE_ENV=production
     restart: unless-stopped
 
+  auth_service:
+    build: ./dist
+    ports:
+      - "8001:8001"
+    environment:
+      PORT : 8001
+      - NODE_ENV=production
+    restart: unless-stopped
+
   catalog_ui:
     build: .
     port:

@@ -6,10 +6,17 @@ import { UserRepository } from "../repository/user.repository";
 // import { ProfileService } from "../services/profile.service";
 // import { ProfileRepository } from "../repository/profile.repository";
 import { CreateProfileRequest, LoginRequest } from "../dto/profile.dto";
+import { TokenService } from "../services/token.service";
+import { TokenRepository } from "../repository/token.repository";
+import { link } from "fs";
+// import { verifyToken } from "../utils/token";
+import { sendResetPasswordEmail } from "../services/emai.service";
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
 export const userservice = new UserService(new UserRepository())
+export const tokenservice = new TokenService(new TokenRepository())
 // export const profileservice = new ProfileService( new ProfileRepository())
 
 // endpoints
@@ -28,7 +35,7 @@ router.post(
       return res.status(201).json([user]);
     } catch (error) {
       const err = error as Error;
-      return res.status(500).json(err.message);
+      return next(err);
     }
   }
 );
@@ -43,14 +50,14 @@ router.post(
       );
 
       if (errors) return res.status(400).json(errors);
-      const user = await userservice.getUser(input.username, input.password)
+      const user = await userservice.getUser(input.email, input.password)
       // console.log(user)
 
-      const token: any = generateToken(user.id)
+      const token: any = ""//generateToken(user.id)
 
       res.cookie("Authorization", token, {
         httpOnly: true,    // Prevent frontend JS from reading the cookie (Security!)
-        secure: true,      // Only sent over HTTPS (use false for local dev without SSL)
+        secure: false,      // Only sent over HTTPS (use false for local dev without SSL)
         sameSite: 'lax',   // Helps prevent CSRF attacks
         maxAge: 3600000,   // Cookie expiration in milliseconds (1 hour)
         path: '/',         // Available across the entire site
@@ -72,8 +79,44 @@ router.post(
     }
   }
 );
+
+router.get("/resetpassword", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await userservice.getUser(req.body.email || "");
+    const token = await tokenservice.createToken({userId: user.id, type: "reset_password", expiresAt: new Date(Date.now() + 3600000)});
+    let rest_link = process.env.RESET_PASSWORD_LINK + token.token;
+    await sendResetPasswordEmail(user.email, token.token);
+    return res.status(200).json({ rest_link});
+  } catch (error) {
+    const err = error as Error;
+    return next(err);
+  }
+});
+
+router.post("/resetpassword/:token", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const token = req.params.token;
+    // TODO: Verify token and reset password
+    const data = await verifyToken(token, "reset_password");
+    const user = userservice.updateUser({id: data.userId, email: req.body.email, password: req.body.password });
+    return res.status(200).json( user );
+  } catch (error) {
+    const err = error as Error;
+    return next(err);
+  }
+});
+
+ const verifyToken = async (token: string, type: string) => {
+  const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  const tokenDoc = await tokenservice.getToken(payload.id,type);
+  if (!tokenDoc) {
+    throw new Error('Token not found');
+  }
+  return tokenDoc;
+};
+
 // router.patch(
-//   "/products/:id",
+//   "/user/:id",
 //   async (req: Request, res: Response, next: NextFunction) => {
 //     try {
 //       const { errors, input } = await RequestValidator(
@@ -85,7 +128,7 @@ router.post(
 
 //       if (errors) return res.status(400).json(errors);
 
-//       const data = await catalogService.updateProduct({ id, ...input });
+//       const data = await userservice.updateUser({ id, ...input });
 //       return res.status(200).json(data);
 //     } catch (error) {
 //       const err = error as Error;

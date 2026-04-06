@@ -13,7 +13,7 @@ export const HandleErrorWithLogger = (
    next: NextFunction,
 ) => {
    let reportError = true;
-   let status = 500;
+   let status = error["status"] || 500;
    let data = error.message;
 
    // skip common / known errors
@@ -34,7 +34,6 @@ export const HandleErrorWithLogger = (
 
    return res.status(status).json({
       message: error.message,
-      stack: error.stack,
       name: error.name
    });
 };
