@@ -53,7 +53,8 @@ router.post(
       const user = await userservice.getUser(input.email, input.password)
       // console.log(user)
 
-      const token: any = ""//generateToken(user.id)
+      // const token: any = ""//generateToken(user.id)
+      const token = await tokenservice.createToken({userId: user.id, type: "auth", expires: Math.floor(Date.now() + 3600000 / 1000)});
 
       res.cookie("Authorization", token, {
         httpOnly: true,    // Prevent frontend JS from reading the cookie (Security!)
@@ -83,7 +84,7 @@ router.post(
 router.get("/resetpassword", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await userservice.getUser(req.body.email || "");
-    const token = await tokenservice.createToken({userId: user.id, type: "reset_password", expiresAt: new Date(Date.now() + 3600000)});
+    const token = await tokenservice.createToken({userId: user.id, type: "reset_password", expires: Math.floor(Date.now() + 3600000 / 1000)});
     let rest_link = process.env.RESET_PASSWORD_LINK + token.token;
     await sendResetPasswordEmail(user.email, token.token);
     return res.status(200).json({ rest_link});
@@ -114,6 +115,24 @@ router.post("/resetpassword/:token", async (req: Request, res: Response, next: N
   }
   return tokenDoc;
 };
+
+router.get("/verify", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    let err: Error = new Error('Unathorized user.');
+    const token = req.query.token as string;
+    if (!token) {
+      return res.status(405).json(err)
+    }
+    const data = await verifyToken(token, "auth");
+    if (!data) {
+      return res.status(405).json(err)
+    }
+    return res.status(200).json(data);
+  } catch (error) {
+    const err = error as Error;
+    return res.status(405).json({"message":err.message});
+  }
+});
 
 // router.patch(
 //   "/user/:id",

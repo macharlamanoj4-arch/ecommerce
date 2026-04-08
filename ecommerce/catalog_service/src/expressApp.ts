@@ -1,7 +1,7 @@
 import express from "express";
 import catalogRouter from "./api/catalog.routes";
 import { httpLogger, HandleErrorWithLogger } from "./utils";
-import { authenticate } from "./utils";
+import { verifyUser } from "./utils";
 import cors from "cors";
 
 const app = express();
@@ -25,7 +25,7 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-app.use("/products", authenticate, catalogRouter);
+app.use("/products", verifyUser, catalogRouter);
 
 app.use(HandleErrorWithLogger);
 

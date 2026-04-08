@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface LoginFormData {
-  username: string;
+  email: string;
   password: string;
 }
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState<LoginFormData>({
-    username: '',
+    email: '',
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +43,7 @@ const Login: React.FC = () => {
         localStorage.setItem(process.env.REACT_APP_USER_KEY || 'ecommerce_user', JSON.stringify(data.profile));
         navigate('/catalog');
       } else {
-        setError('Invalid username or password');
+        setError('Invalid email or password');
       }
     } catch (err) {
       setError('Login failed. Please try again.');
@@ -78,13 +78,13 @@ const Login: React.FC = () => {
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <input
-                id="username"
-                name="username"
+                id="email"
+                name="email"
                 type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Username"
-                value={formData.username}
+                value={formData.email}
                 onChange={handleChange}
               />
             </div>

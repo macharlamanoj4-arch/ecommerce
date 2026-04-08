@@ -10,8 +10,7 @@ export class TokenService {
 
   async createToken(input: any) {
     const token = generateToken(input.userId, input.expires, input.type);
-    console.log("to cre>>>" ,input)
-    delete input.expiresAt
+    delete input.expires
     input.token = token;
     const data = await this._repository.create(input);
     if (!data.userId) {
