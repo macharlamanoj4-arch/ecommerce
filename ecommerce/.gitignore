@@ -6,3 +6,4 @@ yarn.lock
 package-lock.json
 prisma/migrations
 generated
+order_service_ex

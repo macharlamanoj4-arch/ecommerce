@@ -1,11 +1,10 @@
-import "reflect-metadata";
-import expressApp from './expressApp';
+import { ExpressApp } from "./express-app";
 import { logger } from "./utils";
-import { config } from './config/config'
 
-const PORT = config.port || 8000;
+const PORT = process.env.APP_PORT || 9002;
 
 export const StartServer = async () => {
+  const expressApp = await ExpressApp();
   expressApp.listen(PORT, () => {
     logger.info(`App is listening to ${PORT}`);
   });
@@ -17,5 +16,5 @@ export const StartServer = async () => {
 };
 
 StartServer().then(() => {
-  logger.info("server is up and running..");
+  logger.info("server is up");
 });
